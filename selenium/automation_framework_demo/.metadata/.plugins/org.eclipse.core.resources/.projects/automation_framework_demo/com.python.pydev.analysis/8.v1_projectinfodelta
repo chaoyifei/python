@@ -1,0 +1,9 @@
+INSTUPframework.logger
+E:\automation_framework_demo\automation_framework_demo\framework\logger.py
+INFOS:&&1|1|2|0&&2|3|2|1&&3|4|2|5&&2|6|2|1
+__init__=3
+framework.logger=2
+logger=4
+getlog=6
+Logger.__init__=5
+Logger=1

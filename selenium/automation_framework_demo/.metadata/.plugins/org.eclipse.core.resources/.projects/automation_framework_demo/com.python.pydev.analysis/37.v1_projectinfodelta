@@ -1,0 +1,10 @@
+INSTUPtestsuit.baidu_search
+E:\automation_framework_demo\automation_framework_demo\testsuit\baidu_search.py
+INFOS:&&1|1|2|0&&2|3|2|1&&3|4|2|5&&2|6|2|1&&2|7|2|1
+BaiduSearch.setUp=5
+setUp=3
+BaiduSearch=1
+testsuit.baidu_search=2
+driver=4
+test_baidu_search=7
+tearDown=6

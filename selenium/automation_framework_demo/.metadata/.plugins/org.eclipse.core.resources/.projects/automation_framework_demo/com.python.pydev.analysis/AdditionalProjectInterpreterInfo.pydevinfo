@@ -1,0 +1,38 @@
+-- VERSION_4
+-- START DISKCACHE_2
+E:\automation_framework_demo\.metadata\.plugins\org.eclipse.core.resources\.projects\automation_framework_demo\com.python.pydev.analysis\v2_indexcache
+testsuit.baidu_search|1500180767412418000|E:\automation_framework_demo\automation_framework_demo\testsuit\baidu_search.py
+testsuit.__init__|1500179833519325000|E:\automation_framework_demo\automation_framework_demo\testsuit\__init__.py
+framework.browser_engine|1500181815032016000|E:\automation_framework_demo\automation_framework_demo\framework\browser_engine.py
+logs.__init__|1500179818448339000|E:\automation_framework_demo\automation_framework_demo\logs\__init__.py
+framework.__init__|1500179788871949000|E:\automation_framework_demo\automation_framework_demo\framework\__init__.py
+-- END DISKCACHE
+-- START DICTIONARY
+6
+5=BaiduSearch.setUp
+6=BaiduSearch
+4=BrowserEngine.__init__
+3=BrowserEngine
+1=testsuit.baidu_search
+2=framework.browser_engine
+-- END DICTIONARY
+-- START TREE 1
+3
+bai|1|BaiduSearch!9@
+bro|1|BrowserEngine!17@
+log|1|logger!19@
+-- END TREE
+-- START TREE 2
+11
+__i|1|__init__!3&18@
+dir|1|dir!3&19@
+dri|2|driver!4&19@driver!5&11@
+get|0|
+ie_|1|ie_driver_path!3&19@
+log|0|
+ope|1|open_browser!3&18@
+qui|1|quit_browser!3&18@
+set|1|setUp!6&10@
+tea|1|tearDown!6&10@
+tes|1|test_baidu_search!6&10@
+-- END TREE

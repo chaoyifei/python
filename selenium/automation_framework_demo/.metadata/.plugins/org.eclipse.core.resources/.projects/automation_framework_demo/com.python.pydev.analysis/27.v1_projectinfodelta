@@ -1,0 +1,9 @@
+INSTUPpageobjects.baidu_homepage
+E:\automation_framework_demo\automation_framework_demo\pageobjects\baidu_homepage.py
+INFOS:&&1|1|2|0&&3|3|2|1&&3|4|2|1&&2|5|2|1&&2|6|2|1
+type_search=5
+send_submit_btn=6
+HomePage=1
+input_box=3
+pageobjects.baidu_homepage=2
+search_submit_btn=4

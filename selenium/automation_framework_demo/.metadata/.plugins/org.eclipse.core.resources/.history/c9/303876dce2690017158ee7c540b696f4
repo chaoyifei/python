@@ -1,0 +1,7 @@
+'''
+Created on 2017Äê7ÔÂ16ÈÕ
+
+@author: Administrator
+'''
+import sys 
+sys.getdefaultencoding()
