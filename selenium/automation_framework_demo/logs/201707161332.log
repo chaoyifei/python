@@ -1,0 +1,6 @@
+2017-07-16 13:32:43,720 - BrowserEngine - INFO - You had select IE browser.
+2017-07-16 13:32:43,720 - BrowserEngine - INFO - The test server url is: https://www.baidu.com
+2017-07-16 13:32:47,713 - BrowserEngine - INFO - Starting IE browser.
+2017-07-16 13:32:48,345 - BrowserEngine - INFO - open url : https://www.baidu.com 
+2017-07-16 13:32:48,357 - BrowserEngine - INFO - Maximize the current window.
+2017-07-16 13:32:48,369 - BrowserEngine - INFO - Set implicitly wait 10 seconds.
