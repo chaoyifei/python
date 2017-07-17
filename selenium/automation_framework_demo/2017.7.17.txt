@@ -1,0 +1,4 @@
+实现三个页面，两个测试脚本。
+在pageobjects包下，新建了2个页面对象：百度新闻首页，百度体育新闻首页，具体文件结构如下图，其他和之前项目层级结构保持不变。
+测试页面每个页面写一个不能直接去获取查找
+目前存在问题  Unable to find element with xpath == //*[@id='channel-submenu']/div/span[2]/a[1]
