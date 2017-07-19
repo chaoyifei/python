@@ -1,1 +1,22 @@
-�����ܣ�����python2.7
+python2.7
+scrapy环境配置
+安装
+首先是 scrapy 的安装
+pip install Scrapy
+对于html节点信息的提取使用了 Beautiful Soup 库
+pip install beautifulsoup4
+对于目标网页的 Beautiful Soup 对象初始化需要用到 html5lib 解释器
+	
+pip install html5lib
+安装完成后，直接在命令行运行命令
+scrapy
+可以看到如下输出结果，这时候证明scrapy安装完成了
+Scrapy 1.2.1 - no active project
+项目创建
+通过命令行在当前路径下创建一个名为 photo 的项目
+scrapy startproject photo
+......
+运行
+创建好自定义的类后，切换到photo路径下，运行命令，启动爬虫任务开始爬取网页。
+	
+scrapy photo
