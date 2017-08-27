@@ -1,6 +1,8 @@
-# -*- coding: utf-8 -*-
+#coding=utf-8
 
 import requests
+import urllib2
+import json
 from bs4 import BeautifulSoup
 import traceback
 import re
@@ -19,11 +21,19 @@ def getHTMLText(url):
     except:
         return ""
 
+# def getHTMLText(url):
+#     resq = urllib2.urlopen(url)
+#     html = resq.read()
+#     return html
+
+
+
 
 def getStockList(lst, stockURL):
     html = getHTMLText(stockURL)
     soup = BeautifulSoup(html, 'html.parser')
     a = soup.find_all('a')
+
     for i in a:
         try:
             href = i.attrs['href']
@@ -33,7 +43,7 @@ def getStockList(lst, stockURL):
 
 
 def getStockInfo(lst, stockURL, fpath):
-    #count = 0
+    count = 0
     for stock in lst:
         url = stockURL + stock + ".html"
         html = getHTMLText(url)
@@ -52,17 +62,18 @@ def getStockInfo(lst, stockURL, fpath):
                 key = keyList[i].text
                 val = valueList[i].text
                 infoDict[key] = val
-                print str(infoDict).decode('utf-8')
+                #遍历字典处理字典不能答应十六进制
+                temp= json.dumps(infoDict,encoding='utf-8',ensure_ascii=False)
 
             with open(fpath, 'a') as f:
 
-                f.write(str(infoDict) + '\n')
-                #count = count + 1
-                #print("\r当前进度: {:.2f}%".format(count * 100 / len(lst)))
+                f.write(str(temp) + '\n')
+                count = count + 1
+                print("\r当前进度: {:.2f}%".format(count * 100 / len(lst)))
         except:
 
-                #count = count + 1
-                #print("\r当前进度: {:.2f}%".format(count * 100 / len(lst)))
+                count = count + 1
+                print("\r当前进度: {:.2f}%".format(count * 100 / len(lst)))
                 continue
 def main():
     stock_list_url = 'http://quote.eastmoney.com/stocklist.html'
