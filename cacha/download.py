@@ -8,10 +8,11 @@
 '''
 import urlparse
 import urllib2
+import random
+#下载类
 class Download(object):
-    #下载类
-    def __int__(self,user_agent=None,proxies=None,num_retires=None,\
-                cache=None):
+
+    def __init__(self,user_agent=None,proxies=None,num_retires=None, cache=None):
         self.user_agent=user_agent
         self.proxies=proxies
         self.num_retries=num_retires #重试次数
@@ -24,13 +25,39 @@ class Download(object):
             except KeyError:
                 pass
             else:
-                if self.num_retries>0 and 500<=result['code']
+                if self.num_retries>0 and 500<=result['code']:
                     return None
+        if result is None:
+            proxy=random.choice(self.proxies) if self.proxies else None
+            headers={'User-agent':self.user_agent}
+            result=self.download(url,headers,proxy,self.num_retries)
+            if self.cache:
+                self.cache[url]=result #把数据存入缓存
+    def download(self,url,headers,proxy,num_retries,data=None):
+        print 'Download:',url
+        request=urllib2.Request(url,headers=headers)
+        try:
+            response=urllib2.urlopen(request)
+            html=response.read()
+            code=response.code
+        except urllib2.URLError as e:
+            print 'Download error',e.reason #打印错误信息
+            html=None
+            if hasattr(e,'code'):  #查找
+                code=e.code
+                if num_retries>0 and 500<=code<600:
+                    return self.download(url,headers=headers,\
+                                         proxy=proxy,num_retries=num_retries-1)
+                else:
+                    code=None
+        return {'html':html,'code':code}
+
+
 
 
 
 
 if __name__=='__main__':
     d=Download()
-    d()
+
 
