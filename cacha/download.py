@@ -12,10 +12,10 @@ import random
 #下载类
 class Download(object):
 
-    def __init__(self,user_agent=None,proxies=None,num_retires=None, cache=None):
+    def __init__(self,user_agent=None,proxies=None,num_retries=None, cache=None):
         self.user_agent=user_agent
         self.proxies=proxies
-        self.num_retries=num_retires #重试次数
+        self.num_retries=num_retries #重试次数
         self.cache=cache
     def __call__(self, url,):
         result=None
