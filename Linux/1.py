@@ -11,6 +11,7 @@ ip='10.10.100.59'
 username='root'
 passwd='Raysdata@2016'
 version='2.5.3.5'
+
 def ssh2(ip,username,passwd):
     #paramiko.util.log_to_file('paramiko.log')
     try:
@@ -31,7 +32,7 @@ def ssh2(ip,username,passwd):
     except:
         print '%s\tError\n'%(ip)
     ssh.close()
-# if __name__=='__main__':
+# if __name__=='__main__':r
 #     cmd = ['unzip /home/bigdata/zeta-all-2.5.3.5.zip -d /home/bigdata/',\
 #            'unzip /home/bigdata/zeta-all-2.5.3.5/zeta-2.5.3.5.zip -d /home/bigdata/zeta-all-2.5.3.5/ '\
 #            '']#你要执行的命令列表
@@ -52,6 +53,7 @@ def unzip(ip,username,passwd,unzip_cmd):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(ip, 22, username, passwd, timeout=3)
         for m in unzip_cmd:
+            print m
             stdin, stdout, stderr =ssh.exec_command(m)
             out = stdout.readlines()
 
@@ -65,6 +67,7 @@ def conf(ip,username,passwd,conf_cmd):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(ip, 22, username, passwd, timeout=3)
         for m in conf_cmd:
+            print m
             stdin, stdout, stderr = ssh.exec_command(m)
             out = stdout.readlines()
         print ' %s 修改配置完成 \n'%(ip)
@@ -95,13 +98,13 @@ def start1(ip,username,passwd,start_cmd):
         print '%s 开启失败\n' % (ip)
 
 unzip_cmd=['unzip /home/bigdata/zeta-all-%s.zip -d /home/bigdata/'%(version),\
-            'unzip /home/bigdata/zeta-all-%%s/zeta-%%s.zip -d /home/bigdata/zeta-all-%s/'%(version),\
+            'unzip /home/bigdata/zeta-all-%s/zeta-%s.zip -d /home/bigdata/zeta-all-%s/'%(version,version,version),\
             'chmod -R 777 /home/bigdata/zeta-all-%s'%(version)]
-conf_cmd=['sed -i \'s/127.0.0.1/10.10.100.59/g\' /home/bigdata/zeta-all-%%s/zeta-%s/conf/master.conf'%(version),\
-          'sed -i \'s/^master.web.auth.host.*/master.web.auth.host = 127.0.0.1/g\' /home/bigdata/zeta-all-%%s/zeta-%s/conf/master.conf'%(version),\
-          'sed -i \'s/127.0.0.1/10.10.100.59/g\' /home/bigdata/zeta-all-%%s/zeta-%s/conf/author.conf'%(version),\
-          'sed -i \'s/127.0.0.1/10.10.100.59/g\' /home/bigdata/zeta-all-%%s/zeta-%s/conf/worker.conf'%(version),\
-          'sed -i \'s/127.0.0.1/10.10.100.59/g\' /home/bigdata/zeta-all-%%s/zeta-%s/conf/daemon.conf'%(version)]
+conf_cmd=['sed -i \'s/127.0.0.1/%s/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/master.conf'%(ip,version,version),\
+          'sed -i \'s/^master.web.auth.host.*/master.web.auth.host = 127.0.0.1/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/master.conf'%(version,version),\
+          'sed -i \'s/127.0.0.1/%s/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/author.conf'%(ip,version,version),\
+          'sed -i \'s/127.0.0.1/%s/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/worker.conf'%(ip,version,version),\
+          'sed -i \'s/127.0.0.1/%s/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/daemon.conf'%(ip,version,version)]
 fire_cmd=['firewall-cmd --zone=public --add-port=6789/tcp --permanent',\
           'firewall-cmd --zone=public --add-port=9090/tcp --permanent',\
           'firewall-cmd --zone=public --add-port=9091/tcp --permanent',\
@@ -109,15 +112,15 @@ fire_cmd=['firewall-cmd --zone=public --add-port=6789/tcp --permanent',\
           'firewall-cmd --zone=public --add-port=9093/tcp --permanent',\
           'systemctl restart firewalld.service'
           ]
-start_cmd=['sh /home/bigdata/zeta-all-%%s/zeta-%s/bin/start-auth.sh'%(version),\
-           'sh /home/bigdata/zeta-all-%%s/zeta-%s/bin/start-master.sh'%(version),\
-           'sh /home/bigdata/zeta-all-%%s/zeta-%s/bin/start-daemon.sh'%(version),\
-           'sh /home/bigdata/zeta-all-%%s/zeta-%s/bin/start-worker.sh'%(version)
+start_cmd=['sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-auth.sh'%(version,version),\
+           'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-master.sh'%(version,verion),\
+           'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-daemon.sh'%(version,version),\
+           'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-worker.sh'%(version,version)
            ]
 
 if __name__=='__main__':
     ssh2(ip, username, passwd)
     unzip(ip,username,passwd,unzip_cmd)
     conf(ip,username,passwd,conf_cmd)
-    # fire(ip,username,passwd,fire_cmd)
-    # start1(ip,username,passwd,start_cmd)
+    fire(ip,username,passwd,fire_cmd)
+    start1(ip,username,passwd,start_cmd)
