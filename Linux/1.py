@@ -7,10 +7,10 @@
 @Software: PyCharm
 '''
 import paramiko
-ip='10.10.100.59'
+ip='10.20.66.230'
 username='root'
-passwd='Raysdata@2016'
-version='2.5.3.5'
+passwd='P@ssw0rd'
+version='2.5.3.10'
 
 def ssh2(ip,username,passwd):
     #paramiko.util.log_to_file('paramiko.log')
@@ -102,18 +102,19 @@ unzip_cmd=['unzip /home/bigdata/zeta-all-%s.zip -d /home/bigdata/'%(version),\
             'chmod -R 777 /home/bigdata/zeta-all-%s'%(version)]
 conf_cmd=['sed -i \'s/127.0.0.1/%s/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/master.conf'%(ip,version,version),\
           'sed -i \'s/^master.web.auth.host.*/master.web.auth.host = 127.0.0.1/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/master.conf'%(version,version),\
-          'sed -i \'s/127.0.0.1/%s/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/author.conf'%(ip,version,version),\
           'sed -i \'s/127.0.0.1/%s/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/worker.conf'%(ip,version,version),\
           'sed -i \'s/127.0.0.1/%s/g\' /home/bigdata/zeta-all-%s/zeta-%s/conf/daemon.conf'%(ip,version,version)]
-fire_cmd=['firewall-cmd --zone=public --add-port=6789/tcp --permanent',\
-          'firewall-cmd --zone=public --add-port=9090/tcp --permanent',\
-          'firewall-cmd --zone=public --add-port=9091/tcp --permanent',\
-          'firewall-cmd --zone=public --add-port=19095/tcp --permanent',\
-          'firewall-cmd --zone=public --add-port=9093/tcp --permanent',\
-          'systemctl restart firewalld.service'
+#cenos6.5
+fire_cmd=['/sbin/iptables -I INPUT -p tcp --dport 6789 -j ACCEPT',\
+          '/sbin/iptables -I INPUT -p tcp --dport 9090 -j ACCEPT',\
+          '/sbin/iptables -I INPUT -p tcp --dport 9091 -j ACCEPT',\
+          '/sbin/iptables -I INPUT -p tcp --dport 19095 -j ACCEPT',\
+          '/sbin/iptables -I INPUT -p tcp --dport 9093 -j ACCEPT',\
+          '/etc/rc.d/init.d/iptables save',\
+          '/etc/init.d/iptables restart'
           ]
 start_cmd=['sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-auth.sh'%(version,version),\
-           'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-master.sh'%(version,verion),\
+           'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-master.sh'%(version,version),\
            'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-daemon.sh'%(version,version),\
            'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-worker.sh'%(version,version)
            ]
