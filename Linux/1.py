@@ -7,31 +7,49 @@
 @Software: PyCharm
 '''
 import paramiko
+import time
+import sys
 ip='10.20.66.230'
-username='root'
-passwd='P@ssw0rd'
-version='2.5.3.10'
+username='bigdata'
+passwd='123456'
+version='2.5.3.5'
+source_ip='10.20.66.122'
+source_path='/home/bigdata/zeta-all-%s.zip'%(version)
+source_passwd='P@ssw0rd'
+local_patch='/home/bigdata/'
 
-def ssh2(ip,username,passwd):
-    #paramiko.util.log_to_file('paramiko.log')
-    try:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(ip, 22, username, passwd, timeout=3)
+#等待:
 
-        # for m in cmd:
-        #     stdin, stdout, stderr = ssh.exec_command(m)
-        #     out = stdout.readlines()
-        #     count+=1
-        #     print 'The  %s is OK\n' %(count)
-        #
-        #     '''日志输出需重定向'''
-        #     # for o in out:
-        #     #     print o
-        print '  %s\tPASS\n'%(ip)
-    except:
-        print '%s\tError\n'%(ip)
-    ssh.close()
+
+def CopyPakage(username,ip,passwd,source_ip,source_path,local_patch,source_passwd):
+    recv_buffer=1024
+    # 设置ssh连接的远程主机地址和端口
+    t = paramiko.Transport((ip, 22))
+    # 设置登录名和密码
+    t.connect(username=username, password=passwd)
+    # 连接成功后打开一个channel
+    chan = t.open_session()
+    # 设置会话超时时间
+    chan.settimeout(300)
+    # 打开远程的terminal
+    chan.get_pty()
+    # 激活terminal
+    chan.invoke_shell()
+    chan.send('scp root@%s:%s %s' %(source_ip,source_path,local_patch)+'\n')
+    time.sleep(2)
+    strs=chan.recv(recv_buffer)
+    print strs
+    if '?'in strs:
+        chan.send('yes'+'\n')
+        time.sleep(2)
+    else:
+        pass
+        chan.send(source_passwd+'\n')
+        str = chan.recv(recv_buffer)
+        while not str.endswith('$'):
+           print  chan.recv(recv_buffer)
+    t.close()
+
 # if __name__=='__main__':r
 #     cmd = ['unzip /home/bigdata/zeta-all-2.5.3.5.zip -d /home/bigdata/',\
 #            'unzip /home/bigdata/zeta-all-2.5.3.5/zeta-2.5.3.5.zip -d /home/bigdata/zeta-all-2.5.3.5/ '\
@@ -114,14 +132,13 @@ fire_cmd=['/sbin/iptables -I INPUT -p tcp --dport 6789 -j ACCEPT',\
           '/etc/init.d/iptables restart'
           ]
 start_cmd=['sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-auth.sh'%(version,version),\
-           'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-master.sh'%(version,version),\
-           'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-daemon.sh'%(version,version),\
-           'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-worker.sh'%(version,version)
+           'sh /home/bigdata/zeta-all-%s/zeta-%s/bin/start-master.sh'%(version,version),
            ]
 
 if __name__=='__main__':
-    ssh2(ip, username, passwd)
-    unzip(ip,username,passwd,unzip_cmd)
-    conf(ip,username,passwd,conf_cmd)
-    fire(ip,username,passwd,fire_cmd)
-    start1(ip,username,passwd,start_cmd)
+    CopyPakage(username,ip,passwd,source_ip,source_path,local_patch,source_passwd)
+    #ssh2(ip, username, passwd)
+    # unzip(ip,username,passwd,unzip_cmd)
+    # conf(ip,username,passwd,conf_cmd)
+    fire(ip,username='root',passwd='P@ssw0rd',fire_cmd=fire_cmd)
+    # start1(ip,username,passwd,start_cmd)
