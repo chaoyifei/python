@@ -9,7 +9,7 @@
 import paramiko
 import time
 #带交互的通道
-def linux_interactive(host_ip,username,passwd,timeouts,cmd,info,coun,end):
+def linux_interactive(host_ip,username,passwd,timeouts,cmd,info,coun,saiy,end):
     #定义接收缓存大小
     recv_buffer = 1024
     # 设置ssh连接的远程主机地址和端口
@@ -28,16 +28,20 @@ def linux_interactive(host_ip,username,passwd,timeouts,cmd,info,coun,end):
     time.sleep(2)
     strs = chan.recv(recv_buffer)
     print strs
-    if info in strs:
-        chan.send('yes' + '\n')
-        time.sleep(2)
-    else:
-        pass
+    try:
+        if info is None:
+            pass
+    except:
+        if info in strs:
+            chan.send('saiy' + '\n')
+            time.sleep(2)
+        else:
+            pass
 
-        chan.send(coun + '\n')
-        str = chan.recv(recv_buffer)
-        while not str.endswith(end):
-            print  chan.recv(recv_buffer)
+            chan.send(coun + '\n')
+            str = chan.recv(recv_buffer)
+            while not str.endswith(end):
+                print  chan.recv(recv_buffer)
     chan.close()
     t.close()
 #执行命令的通道：
