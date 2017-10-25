@@ -70,12 +70,17 @@ class linux(object):
                 return result
 
     #文件上传
-    def sftp_upload(self):
+    def sftp_upload(self,localpath,remotepath):
         try:
-            sftp_host=linux().connect()
-            sftp = paramiko.SFTPClient.from_transport(sftp_host)
-            sftp.put(localpath=self.localpath,remotepath=self.remotepath)
+            self.t = paramiko.Transport(sock=(self.ip, 22))
+            self.t.connect(username=self.username, password=self.password)
+            sftp = paramiko.SFTPClient.from_transport(self.t)
+
+            sftp.put(localpath=localpath,remotepath=remotepath)
+            print '文件上传成功'
+            self.t.close()
         except Exception,e:
+            print 'error:'
             print e
             exit(1)
     #文件下载
@@ -86,9 +91,11 @@ class linux(object):
             sftp = paramiko.SFTPClient.from_transport(self.t)
 
             sftp.get(remotepath=remotepath,localpath=localpath)
+            print '下载文件成功'
             self.t.close()
         except Exception,e:
-            print 'error:'+e
+            print 'error'
+            print e
             exit(1)
 
 #测试
@@ -98,9 +105,13 @@ class linux(object):
 #     host.send('ls -l')
 #     host.close()
 #测试下载文件
+# if __name__=='__main__':
+#     host=linux('10.20.66.230','bigdata','123456')
+#     host.sftp_down('/home/bigdata/zeta/zeta-nix-2.6.0.2/logs/worker-2017-10-25-0.log','E:\com\worker-2017-10-25-0.log')
+#测试文件上传
 if __name__=='__main__':
-    host=linux('10.20.66.230','bigdata','123456')
-    host.sftp_down('/home/bigdata/zeta/zeta-nix-2.6.0.2/logs/worker.out','E:\com\worker.out')
+    host = linux('10.20.66.230', 'bigdata', '123456')
+    host.sftp_upload('E:\com\worker-2017-10-25-0.log','/home/bigdata/worker-2017-10-25-0.log')
 
 
 
