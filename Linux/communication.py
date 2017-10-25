@@ -23,6 +23,7 @@ class linux(object):
         self.chan=None
         # 链接失败的重试次数
         self.try_times=3
+        self.source_passwd='Raysdata@2016'
     # 调用该方法连接远程主机
     def connect(self):
         while True:
@@ -54,8 +55,11 @@ class linux(object):
     #发送命令
     def send(self,cmd):
         cmd+='\r'
-        # 通过命令执行提示符来判断命令是否执行完成
-        p = re.compile(r'$')
+        # 命令执行完提示符
+        p1 = re.compile(r'$')
+        #交互提示符
+        p2 =re.compile(r'\?')
+
         result = ''
         #发送执行的命令
         self.chan.send(cmd)
@@ -65,9 +69,27 @@ class linux(object):
             ret = self.chan.recv(65535)
             ret=ret.decode('utf-8')
             result+=ret
-            if p.search(ret):
+            if p1.search(ret):
                 print result
                 return result
+            else:
+                if p2.search(ret):
+                    self.chan.send('yes'+'\n')
+                else:
+                    pass
+                    self.chan.send(self.source_passwd + '\n')
+                    while True:
+                        sleep(0.5)
+                        ret = self.chan.recv(65535)
+                        ret = ret.decode('utf-8')
+                        result += ret
+                        if p1.search(ret):
+                            print result
+                            return result
+
+
+
+
 
     #文件上传
     def sftp_upload(self,localpath,remotepath):
@@ -99,19 +121,22 @@ class linux(object):
             exit(1)
 
 #测试
-# if __name__ == '__main__':
-#     host=linux('10.20.66.230','bigdata','123456')
-#     host.connect()
-#     host.send('ls -l')
-#     host.close()
+if __name__ == '__main__':
+    host=linux('10.20.66.230','bigdata','123456')
+    host.connect()
+    host.send('ls -l')
+
+
+
+    host.close()
 #测试下载文件
 # if __name__=='__main__':
 #     host=linux('10.20.66.230','bigdata','123456')
 #     host.sftp_down('/home/bigdata/zeta/zeta-nix-2.6.0.2/logs/worker-2017-10-25-0.log','E:\com\worker-2017-10-25-0.log')
 #测试文件上传
-if __name__=='__main__':
-    host = linux('10.20.66.230', 'bigdata', '123456')
-    host.sftp_upload('E:\com\worker-2017-10-25-0.log','/home/bigdata/worker-2017-10-25-0.log')
+# if __name__=='__main__':
+#     host = linux('10.20.66.230', 'bigdata', '123456')
+#     host.sftp_upload('E:\com\worker-2017-10-25-0.log','/home/bigdata/worker-2017-10-25-0.log')
 
 
 
