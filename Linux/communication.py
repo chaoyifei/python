@@ -13,7 +13,7 @@ import os
 #定义一个类，表示一台远端linux主机
 class linux(object):
     # 通过IP, 用户名，密码，超时时间初始化一个远程Linux主机
-    def __init__(self,ip,username,password,timeout=30):
+    def __init__(self,ip,username,password,timeout=300,source_passwd='Raysdata@2016'):
         self.ip=ip
         self.username=username
         self.password=password
@@ -23,7 +23,7 @@ class linux(object):
         self.chan=None
         # 链接失败的重试次数
         self.try_times=3
-        self.source_passwd='Raysdata@2016'
+        self.source_passwd=source_passwd
     # 调用该方法连接远程主机
     def connect(self):
         while True:
@@ -56,39 +56,45 @@ class linux(object):
     def send(self,cmd):
         cmd+='\r'
         # 命令执行完提示符
-        p1 = re.compile(r'$')
+        p1 = re.compile('$')
         #交互提示符
-        p2 =re.compile(r'\?')
 
         result = ''
         #发送执行的命令
         self.chan.send(cmd)
         # 回显很长的命令可能执行较久，通过循环分批次取回回显
-        while True:
-            sleep(0.5)
-            ret = self.chan.recv(65535)
-            ret=ret.decode('utf-8')
-            result+=ret
-            if p1.search(ret):
-                print result
-                return result
-            else:
-                if p2.search(ret):
-                    self.chan.send('yes'+'\n')
-                else:
-                    pass
-                    self.chan.send(self.source_passwd + '\n')
-                    while True:
-                        sleep(0.5)
-                        ret = self.chan.recv(65535)
-                        ret = ret.decode('utf-8')
-                        result += ret
-                        if p1.search(ret):
-                            print result
-                            return result
-
-
-
+        #while True:
+        sleep(1)
+        ret = self.chan.recv(65535)
+        ret=ret.decode('utf-8')
+        print ret
+        #?为提示秘钥
+        if '?' in ret:
+            self.chan.send('yes'+'\n')
+            sleep(1)
+        #若提示密码
+        elif 'password:' in ret:
+            self.chan.send('Raysdata@2016'+'\n')
+            sleep(1)
+            while True:
+                sleep(0.5)
+                ret = self.chan.recv(65535)
+                ret = ret.decode('utf-8')
+                result += ret
+                print ret
+                if '$'in ret:
+                    return result
+                    break
+        else:
+            while True:
+                sleep(0.5)
+                #ret = self.chan.recv(65535)
+                #ret = ret.decode('utf-8')
+                result += ret
+                print ret
+                if '$'in ret:
+                    return result
+                    break
 
 
     #文件上传
@@ -124,15 +130,16 @@ class linux(object):
 if __name__ == '__main__':
     host=linux('10.20.66.230','bigdata','123456')
     host.connect()
+    #host.send('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.2.tar.gz /home/bigdata')
     host.send('ls -l')
-
-
-
     host.close()
+
+
+
 #测试下载文件
 # if __name__=='__main__':
 #     host=linux('10.20.66.230','bigdata','123456')
-#     host.sftp_down('/home/bigdata/zeta/zeta-nix-2.6.0.2/logs/worker-2017-10-25-0.log','E:\com\worker-2017-10-25-0.log')
+#     host.sftp_down('/home/bigdata/zeta-nix-all-2.6.0.2/setting.env','E:\com\setting.env')
 #测试文件上传
 # if __name__=='__main__':
 #     host = linux('10.20.66.230', 'bigdata', '123456')
