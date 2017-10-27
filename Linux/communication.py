@@ -53,17 +53,21 @@ class linux(object):
         self.chan.close()
         self.t.close()
     #发送命令
-    def send(self,cmd):
-        cmd+='\r'
-        # 命令执行完提示符
-        p1 = re.compile('$')
-        #交互提示符
-
-        result = ''
+    def send(self,cmd,end_flag):
+        def back_display():
+            result = ''
+            while True:
+                sleep(0.5)
+                ret = self.chan.recv(65535)
+                ret = ret.decode('utf-8')
+                result += ret
+                print ret
+                if end_flag in ret:
+                    return result
+                    break
+        cmd += '\r'
         #发送执行的命令
         self.chan.send(cmd)
-        # 回显很长的命令可能执行较久，通过循环分批次取回回显
-        #while True:
         sleep(1)
         ret = self.chan.recv(65535)
         ret=ret.decode('utf-8')
@@ -72,29 +76,16 @@ class linux(object):
         if '?' in ret:
             self.chan.send('yes'+'\n')
             sleep(1)
+            self.chan.send('Raysdata@2016' + '\n')
+            sleep(1)
+            back_display()
         #若提示密码
         elif 'password:' in ret:
             self.chan.send('Raysdata@2016'+'\n')
             sleep(1)
-            while True:
-                sleep(0.5)
-                ret = self.chan.recv(65535)
-                ret = ret.decode('utf-8')
-                result += ret
-                print ret
-                if '$'in ret:
-                    return result
-                    break
+            back_display()
         else:
-            while True:
-                sleep(0.5)
-                #ret = self.chan.recv(65535)
-                #ret = ret.decode('utf-8')
-                result += ret
-                print ret
-                if '$'in ret:
-                    return result
-                    break
+            back_display()
 
 
     #文件上传
@@ -130,8 +121,8 @@ class linux(object):
 if __name__ == '__main__':
     host=linux('10.20.66.230','bigdata','123456')
     host.connect()
-    #host.send('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.2.tar.gz /home/bigdata')
-    host.send('ls -l')
+    host.send('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.2.tar.gz /home/bigdata','$')
+    #host.send('ls -l')
     host.close()
 
 
