@@ -7,9 +7,7 @@
 @Software: PyCharm
 '''
 import paramiko
-import re
 from time import sleep
-import os
 #定义一个类，表示一台远端linux主机
 class linux(object):
     # 通过IP, 用户名，密码，超时时间初始化一个远程Linux主机
@@ -54,24 +52,23 @@ class linux(object):
         self.t.close()
     #发送命令
     def send(self,cmd,end_flag):
+        self.result=''
         def back_display():
-            result = ''
             while True:
                 sleep(0.5)
                 ret = self.chan.recv(65535)
                 ret = ret.decode('utf-8')
-                result += ret
+                self.result += ret
                 print ret
                 if end_flag in ret:
-                    return result
+                    return self.result
                     break
         cmd += '\r'
         #发送执行的命令
         self.chan.send(cmd)
-        sleep(1)
+        sleep(0.5)
         ret = self.chan.recv(65535)
         ret=ret.decode('utf-8')
-        print ret
         #?为提示秘钥
         if '?' in ret:
             self.chan.send('yes'+'\n')
@@ -85,7 +82,13 @@ class linux(object):
             sleep(1)
             back_display()
         else:
-            back_display()
+            while True:
+                sleep(0.5)
+                self.result += ret
+                print ret
+                if end_flag in ret:
+                    return self.result
+                    break
 
 
     #文件上传
@@ -122,7 +125,8 @@ if __name__ == '__main__':
     host=linux('10.20.66.230','bigdata','123456')
     host.connect()
     host.send('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.2.tar.gz /home/bigdata','$')
-    #host.send('ls -l')
+    host.send('ls -l','$')
+    host.send('java-version','$')
     host.close()
 
 
