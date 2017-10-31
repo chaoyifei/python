@@ -7,6 +7,7 @@
 @Software: PyCharm
 '''
 import paramiko
+import re
 from time import sleep
 #定义一个类，表示一台远端linux主机
 class linux(object):
@@ -50,8 +51,8 @@ class linux(object):
     def close(self):
         self.chan.close()
         self.t.close()
-    #发送命令
-    def send(self,cmd,end_flag):
+    #发送拷贝命令
+    def send_scp(self,cmd,source_passwd,end_flag):
         self.result=''
         def back_display():
             while True:
@@ -73,24 +74,29 @@ class linux(object):
         if '?' in ret:
             self.chan.send('yes'+'\n')
             sleep(1)
-            self.chan.send('Raysdata@2016' + '\n')
+            self.chan.send(source_passwd + '\n')
             sleep(1)
             back_display()
         #若提示密码
-        elif 'password:' in ret:
-            self.chan.send('Raysdata@2016'+'\n')
+        else :
+            self.chan.send(source_passwd+'\n')
             sleep(1)
             back_display()
-        else:
-            while True:
-                sleep(0.5)
-                self.result += ret
-                print ret
-                if end_flag in ret:
-                    return self.result
-                    break
-
-
+    def send(self,cmd,end_flag):
+        cmd += '\r'
+        # 通过命令执行提示符来判断命令是否执行完成
+        p = re.compile(end_flag)
+        result=''
+        self.chan.send(cmd)
+        while True:
+            sleep(0.5)
+            ret=self.chan.recv(65535)
+            ret=ret.decode('utf-8')
+            result+=ret
+            print ret
+            if p.search(ret):
+                return result
+                break
     #文件上传
     def sftp_upload(self,localpath,remotepath):
         try:
@@ -121,13 +127,15 @@ class linux(object):
             exit(1)
 
 #测试
-if __name__ == '__main__':
-    host=linux('10.20.66.230','bigdata','123456')
-    host.connect()
-    host.send('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.2.tar.gz /home/bigdata','$')
-    host.send('ls -l','$')
-    host.send('java-version','$')
-    host.close()
+# if __name__ == '__main__':
+#     host=linux('10.20.66.230','bigdata','123456')
+#     host.connect()
+#     host.send('rm -rf zeta*','$')
+#     host.send_scp('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.4.tar.gz /home/bigdata','$')
+#     host.send('tar -zxvf /home/bigdata/zeta-nix-all-2.6.0.4.tar.gz -C /home/bigdata/','$')
+#     host.send('ls -l','$')
+#     host.send('java-version','$')
+#     host.close()
 
 
 
