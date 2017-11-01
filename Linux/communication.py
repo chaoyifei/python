@@ -37,7 +37,7 @@ class linux(object):
                 #连接正常
                 print u'连接%s成功' %(self.ip)
                 # 接收到的网络数据解码为str
-                print self.chan.recv(65535).decode('utf-8')
+                print self.chan.recv(1024).decode('utf-8')
                 return
             #连接异常：
             except Exception,e1:
@@ -57,7 +57,7 @@ class linux(object):
         def back_display():
             while True:
                 sleep(0.5)
-                ret = self.chan.recv(65535)
+                ret = self.chan.recv(1024)
                 ret = ret.decode('utf-8')
                 self.result += ret
                 print ret
@@ -68,7 +68,7 @@ class linux(object):
         #发送执行的命令
         self.chan.send(cmd)
         sleep(0.5)
-        ret = self.chan.recv(65535)
+        ret = self.chan.recv(1024)
         ret=ret.decode('utf-8')
         #?为提示秘钥
         if '?' in ret:
@@ -80,21 +80,22 @@ class linux(object):
         #若提示密码
         else :
             self.chan.send(source_passwd+'\n')
-            sleep(1)
+            sleep(0.5)
+            print self.chan.recv(1024)
             back_display()
     def send(self,cmd,end_flag):
         cmd += '\r'
         # 通过命令执行提示符来判断命令是否执行完成
-        p = re.compile(end_flag)
         result=''
         self.chan.send(cmd)
+        sleep(0.1)
         while True:
-            sleep(0.5)
-            ret=self.chan.recv(65535)
+            sleep(0.01)
+            ret=self.chan.recv(1024)
+            print ret
             ret=ret.decode('utf-8')
             result+=ret
-            print ret
-            if p.search(ret):
+            if result.endswith(end_flag):
                 return result
                 break
     #文件上传
@@ -127,15 +128,15 @@ class linux(object):
             exit(1)
 
 #测试
-# if __name__ == '__main__':
-#     host=linux('10.20.66.230','bigdata','123456')
-#     host.connect()
-#     host.send('rm -rf zeta*','$')
-#     host.send_scp('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.4.tar.gz /home/bigdata','$')
-#     host.send('tar -zxvf /home/bigdata/zeta-nix-all-2.6.0.4.tar.gz -C /home/bigdata/','$')
-#     host.send('ls -l','$')
-#     host.send('java-version','$')
-#     host.close()
+if __name__ == '__main__':
+    host=linux('10.20.66.230','bigdata','123456')
+    host.connect()
+    #host.send('rm -rf zeta*','$')
+    #host.send_scp('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.5.tar.gz /home/bigdata','Raysdata@2016','$')
+    host.send('tar -zxvf /home/bigdata/zeta-nix-all-2.6.0.5.tar.gz -C /home/bigdata/test','$')
+    #host.send('ls -l','$')
+    #host.send('java-version','$')
+    host.close()
 
 
 
@@ -146,7 +147,7 @@ class linux(object):
 #测试文件上传
 # if __name__=='__main__':
 #     host = linux('10.20.66.230', 'bigdata', '123456')
-#     host.sftp_upload('E:\com\worker-2017-10-25-0.log','/home/bigdata/worker-2017-10-25-0.log')
+#     host.sftp_upload('E:\com\gdjson','/opt/test/gdjson')
 
 
 
