@@ -128,22 +128,22 @@ class linux(object):
             exit(1)
 
 #测试
-if __name__ == '__main__':
-    host=linux('10.20.66.230','bigdata','123456')
-    host.connect()
-    #host.send('rm -rf zeta*','$')
-    #host.send_scp('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.5.tar.gz /home/bigdata','Raysdata@2016','$')
-    host.send('tar -zxvf /home/bigdata/zeta-nix-all-2.6.0.5.tar.gz -C /home/bigdata/test','$')
-    #host.send('ls -l','$')
-    #host.send('java-version','$')
-    host.close()
+# if __name__ == '__main__':
+#     host=linux('10.20.66.230','bigdata','123456')
+#     host.connect()
+#     #host.send('rm -rf zeta*','$')
+#     #host.send_scp('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.5.tar.gz /home/bigdata','Raysdata@2016','$')
+#     host.send('tar -zxvf /home/bigdata/zeta-nix-all-2.6.0.5.tar.gz -C /home/bigdata/test','$')
+#     #host.send('ls -l','$')
+#     #host.send('java-version','$')
+#     host.close()
 
 
 
 #测试下载文件
-# if __name__=='__main__':
-#     host=linux('10.20.66.230','bigdata','123456')
-#     host.sftp_down('/home/bigdata/zeta-nix-all-2.6.0.2/setting.env','E:\com\setting.env')
+if __name__=='__main__':
+    host=linux('10.20.66.230','bigdata','123456')
+    host.sftp_down('/home/bigdata/zeta/zeta-nix-2.6.0.5/logs/master-2017-11-01-0.log','E:\com\master-2017-11-01-0.log')
 #测试文件上传
 # if __name__=='__main__':
 #     host = linux('10.20.66.230', 'bigdata', '123456')
