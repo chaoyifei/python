@@ -149,3 +149,5 @@ if __name__ == '__main__':
 # if __name__=='__main__':
 #     host = linux('10.20.66.230', 'bigdata', '123456')
 #     host.sftp_upload('E:\com\gdjson','/opt/test/gdjson')
+#test
+#test
