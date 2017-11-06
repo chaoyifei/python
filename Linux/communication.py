@@ -7,7 +7,6 @@
 '''
 import paramiko
 from time import sleep
-import re
 # 定义一个类，表示一台远端linux主机
 class linux(object):
     # 通过IP, 用户名，密码，超时时间初始化一个远程Linux主机
@@ -89,14 +88,13 @@ class linux(object):
         # 通过命令执行提示符来判断命令是否执行完成
         self.chan.send(cmd)
         sleep(0.5)
-        #ret=self.chan.recv(1024)
         while  True:
-            sleep(1)
+            sleep(0.5)
             ret=self.chan.recv(1024)
             ret=ret.decode('utf-8')
             self.result+=ret
-            print ret
-            if end_flag in ret:
+            print self.result
+            if end_flag in self.result:
                 return self.result
                 break
 
