@@ -89,16 +89,21 @@ class linux(object):
         # 通过命令执行提示符来判断命令是否执行完成
         self.chan.send(cmd)
         sleep(0.5)
-        while True:
-            sleep(0.5)
+        #ret=self.chan.recv(1024)
+        while  True:
+            sleep(1)
             ret=self.chan.recv(1024)
             ret=ret.decode('utf-8')
             self.result+=ret
             print ret
-            if ret.endswith(end_flag):
+            if end_flag in ret:
                 return self.result
-            break
+                break
 
+
+            # if not ret.endswith(end_flag):
+            #     #print ret
+            #     break
     #文件上传
     def sftp_upload(self,localpath,remotepath):
         try:
@@ -132,10 +137,10 @@ class linux(object):
 if __name__ == '__main__':
     host=linux('10.20.66.230','bigdata','123456')
     host.connect()
-    host.send('rm -rf zeta*','$')
-    host.send_scp('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.5.tar.gz /home/bigdata','Raysdata@2016','$')
-    host.send('tar -zxvf /home/bigdata/zeta-nix-all-2.6.0.5.tar.gz -C /home/bigdata/test','$')
-    #host.send('ls -l','$')
+    #host.send('rm -rf zeta*','$')
+    #host.send_scp('scp root@10.10.100.57:/home/bigdata/zeta/target/zeta-nix-all-2.6.0.5.tar.gz /home/bigdata','Raysdata@2016','$')
+    #host.send('tar -zxvf /home/bigdata/zeta-nix-all-2.6.0.5.tar.gz -C /home/bigdata/test','$')
+    host.send('ls -l','$')
     #host.send('java-version','$')
     host.close()
 
