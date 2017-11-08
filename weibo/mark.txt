@@ -1,0 +1,13 @@
+@Author: CHaoyi
+@Date:   2017-11-07T21:19:48+08:00
+@Filename: mark.txt
+@Last modified by:   CHaoyi
+@Last modified time: 2017-11-07T21:20:33+08:00
+
+
+
+python之字符串格式化(format)
+用法：
+它通过{}和:来代替传统%方式
+li = ['hoho',18]
+>>> 'my name is {} ,age {}'.format('hoho',18)
