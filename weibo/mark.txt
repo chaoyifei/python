@@ -11,3 +11,10 @@ python之字符串格式化(format)
 它通过{}和:来代替传统%方式
 li = ['hoho',18]
 >>> 'my name is {} ,age {}'.format('hoho',18)
+
+
+with:
+with 语句是从 Python 2.5 开始引入的一种与异常处理相关的功能（2.5 版本中要通过 from __future__ import with_statement 导入后才可以使用），从 2.6 版本开始缺省可用（参考 What's new in Python 2.6? 中 with 语句相关部分介绍）。with 语句适用于对资源进行访问的场合，确保不管使用过程中是否发生异常都会执行必要的“清理”操作，释放资源，比
+
+mysql
+清空表以及让id从1开始：：truncate table 表名;
