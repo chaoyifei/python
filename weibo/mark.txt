@@ -17,4 +17,6 @@ with:
 with 语句是从 Python 2.5 开始引入的一种与异常处理相关的功能（2.5 版本中要通过 from __future__ import with_statement 导入后才可以使用），从 2.6 版本开始缺省可用（参考 What's new in Python 2.6? 中 with 语句相关部分介绍）。with 语句适用于对资源进行访问的场合，确保不管使用过程中是否发生异常都会执行必要的“清理”操作，释放资源，比
 
 mysql
-清空表以及让id从1开始：：truncate table 表名;
+清空表以及让id从1开始：：
+list:Python内置的一种数据类型是列表：list。list是一种有序的集合，可以随时添加和删除其中的元素。
+tuple:另一种有序列表叫元组：tuple。tuple和list非常类似，但是tuple一旦初始化就不能修改，比如同样是列出同学的名字：

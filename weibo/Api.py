@@ -9,7 +9,7 @@
 
 from weibo import APIClient
 import webbrowser
-import re, time, requests, urllib, request
+import re, time, requests
 import sys
 import MySQLdb
 
