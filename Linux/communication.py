@@ -10,7 +10,7 @@ from time import sleep
 # 定义一个类，表示一台远端linux主机
 class linux(object):
     # 通过IP, 用户名，密码，超时时间初始化一个远程Linux主机
-    def __init__(self, ip, username, password, timeout=300, source_passwd = 'Raysdata@2016'):
+    def __init__(self, ip, username, password, timeout=300):
         self.ip = ip
         self.username = username
         self.password = password
@@ -20,7 +20,7 @@ class linux(object):
         self.chan=None
         # 链接失败的重试次数
         self.try_times=3
-        self.source_passwd=source_passwd
+        #self.source_passwd=source_passwd
     # 调用该方法连接远程主机
     def connect(self):
         while True:
@@ -52,39 +52,39 @@ class linux(object):
         self.t.close()
     # 发送拷贝命令
     def send_scp(self,cmd,source_passwd,end_flag):
-        self.result=''
         def back_display():
+            result=''
             while True:
                 sleep(0.5)
-                ret = self.chan.recv(1024)
-                ret = ret.decode('utf-8')
-                self.result += ret
+                ret = self.chan.recv(65535)
+                #ret = ret.decode('utf-8')
+                result+= ret
                 print ret
                 if end_flag in ret:
-                    return self.result
+                    return result
                     break
         cmd += '\r'
         #发送执行的命令
         self.chan.send(cmd)
-        sleep(0.5)
-        ret = self.chan.recv(1024)
-        ret=ret.decode('utf-8')
+        sleep(1)
+        ret = self.chan.recv(65535)
+        #ret=ret.decode('utf-8')
         #?为提示秘钥
         if '?' in ret:
             self.chan.send('yes'+'\n')
             sleep(0.5)
             self.chan.send(source_passwd + '\n')
-            sleep(0.5)
+            sleep(0.05)
             back_display()
         #若提示密码
         else :
             self.chan.send(source_passwd+'\n')
-            #sleep(0.5)
-            print self.chan.recv(1024)
+            sleep(1)
+            print self.chan.recv(65535)
             back_display()
     def send(self,cmd,end_flag):
         cmd += '\n'
-        self.result=''
+        result=''
         # 通过命令执行提示符来判断命令是否执行完成
         self.chan.send(cmd)
         sleep(0.5)
@@ -92,10 +92,10 @@ class linux(object):
             sleep(0.5)
             ret=self.chan.recv(1024)
             ret=ret.decode('utf-8')
-            self.result+=ret
-            print self.result
-            if end_flag in self.result:
-                return self.result
+            result+=ret
+            print result
+            if end_flag in result:
+                return result
                 break
 
 
@@ -147,7 +147,7 @@ if __name__ == '__main__':
     host.send('cat %szeta/%s/pids/worker.pid | xargs kill' %(dirname,version1),'$')
     # #删目录
     host.send('rm -rf %szeta*'%(dirname),'$')
-    host.send_scp('scp root@10.10.100.57:/home/bigdata/zeta/target/%s.tar.gz /home/bigdata' %(version),'Raysdata@2016','$')
+    host.send_scp('scp root@10.20.66.122:/home/bigdata/%s.tar.gz /home/bigdata' %(version),'P@ssw0rd','$')
     #host.send('tar -zxvf /home/bigdata/zeta-nix-all-2.6.0.6.tar.gz -C /home/bigdata/test','$')
     host.send('tar -zxvf %s%s.tar.gz'%(dirname,version),'$')
     #修改配置文件
