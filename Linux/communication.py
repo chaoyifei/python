@@ -8,6 +8,10 @@
 import paramiko
 from time import sleep
 # 定义一个类，表示一台远端linux主机
+class Error(Exception):
+    def __str__(self):
+        return "error"
+
 class linux(object):
     # 通过IP, 用户名，密码，超时时间初始化一个远程Linux主机
     def __init__(self, ip, username, password, timeout=300):
@@ -78,10 +82,19 @@ class linux(object):
             back_display()
         #若提示密码
         else :
-            self.chan.send(source_passwd+'\n')
-            sleep(1)
-            print self.chan.recv(65535)
-            back_display()
+            try:
+                self.chan.send(source_passwd+'\n')
+                sleep(1)
+                rets=self.chan.recv(65535)
+                print rets
+                if 'scp:' in rets:
+                    raise Error
+            except Exception:
+                print 'error'
+                print rets
+                exit(1)
+
+                back_display()
     def send(self,cmd,end_flag):
         cmd += '\n'
         result=''

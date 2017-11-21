@@ -11,10 +11,10 @@ from communication import *
 if __name__ == '__main__':
     version='zeta-nix-all-2.6.0.9'
     version1='zeta-nix-2.6.0.9'
-    dirname='/home/bigdata/'
-    ip='10.20.66.230'
+    dirname='/home/bigdata/test-c'
+    ip='10.20.66.122'
     plugin=''
-    host=linux(ip,'bigdata','123456')
+    host=linux(ip,'bigdata','bigdata')
     host.connect()
     #杀进程
     host.send('cat %szeta/%s/pids/auth.pid | xargs kill' %(dirname,version1),'$')
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     host.send('cat %szeta/%s/pids/worker.pid | xargs kill' %(dirname,version1),'$')
     # #删目录
     host.send('rm -rf %szeta*'%(dirname),'$')
-    host.send_scp('scp root@10.20.66.122:/home/bigdata/%s.tar.gz /home/bigdata' %(version),'P@ssw0rd','$')
+    host.send_scp('scp root@10.20.66.138:/home/bigdata/%s.tar.gz /home/bigdata' %(version),'P@ssw0rd','$')
     #host.send('tar -zxvf /home/bigdata/zeta-nix-all-2.6.0.6.tar.gz -C /home/bigdata/test','$')
     host.send('tar -zxvf %s%s.tar.gz'%(dirname,version),'$')
     #修改配置文件
