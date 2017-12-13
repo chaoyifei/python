@@ -28,8 +28,9 @@ def get_page_index(offset):
         'cur_tab':3
     }
     params=urlencode(data) #将字典构造为URL
-    base='https://www.toutiao.com/search_content/?'
+    base ='https://www.toutiao.com/search_content/?'
     url=base+params
+    #print url
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 6.1; rv:57.0) Gecko/20100101 Firefox/57.0'}
     try:
         response=requests.get(url,headers=headers)
@@ -76,7 +77,7 @@ def parse_page_detail(html,url):
     soup=BeautifulSoup(html,'lxml')
     result=soup.select('title')
     title=result[0].get_text() if result else ''
-    images_pattern=re.compile(r'gallery: (.*?),\n')
+    images_pattern = re.compile('var gallery = (.*?);', re.S)
     result=re.search(images_pattern, html)
     if result:
         data=json.loads(result.group(1))
@@ -99,14 +100,15 @@ def save_to_mongo(result):
         return True
     return False
 def main(offset):
-    text = get_page_index(offset)
+    text = get_page_index(0)
     urls = parse_page_index(text)
     for url in urls:
         html = get_page_detail(url)
         result = parse_page_detail(html, url)
         if result: save_to_mongo(result)
-pool = Pool()
-groups = ([x * 20 for x in range(1, 21)])
-pool.map(main, groups)
-pool.close()
-pool.join()
+if __name__ == '__main__':
+    pool = Pool()
+    groups = ([x * 20 for x in range(1, 21)])
+    pool.map(main, groups)
+    pool.close()
+    pool.join()
