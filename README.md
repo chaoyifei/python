@@ -1,4 +1,4 @@
-# python
+#python
 selenium为自动化测试框架，其余为python scrapy爬虫
 
 
@@ -13,6 +13,9 @@ python2.7
 2、第二步，需要对得到的html代码进行解析，得到里面提取我们需要的数据，使用BeautifulSoup。
 3、用jieba分词统计词频(numpy)
 4、用云词显示wordcloud
+
+
+https://pan.baidu.com/s/17JimPl3bA2ShVHPZK1z9ow
 
 
 cacha为缓存爬虫
